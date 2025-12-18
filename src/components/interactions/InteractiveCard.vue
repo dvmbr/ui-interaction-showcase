@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { inject } from "vue";
+import { useInteractiveCard } from "./useInteractiveCard";
 
 type CardState = "default" | "error" | "warning" | "success";
 
@@ -9,110 +10,20 @@ const props = defineProps<{
 }>();
 
 const normalizedState = computed<CardState>(() => props.state ?? "default");
-
-const variantClass = computed(() => {
-  switch (normalizedState.value) {
-    case "error":
-      return "border-error text-error";
-    case "warning":
-      return "border-warning text-warning";
-    case "success":
-      return "border-success text-success";
-    default:
-      return "border-border text-text-main";
-  }
-});
-
-const descriptionClass = computed(() => {
-  return normalizedState.value === "default" ? "text-text-muted" : "";
-});
-
-const descriptionText = computed(() => {
-  switch (normalizedState.value) {
-    case "error":
-      return "Something went wrong.";
-    case "warning":
-      return "Needs attention.";
-    case "success":
-      return "Action completed successfully.";
-    default:
-      return "Hover or focus to see interaction feedback.";
-  }
-});
-
-/* 
-- Pressed feedback for "Action" button
-- Pointer events ensure consistent behavior across mouse/touch
-*/
-const isPressed = ref(false);
-
-function onDown() {
-  isPressed.value = true;
-}
-
-function onUp() {
-  isPressed.value = false;
-}
-
-const actionLabel = computed(() => {
-  switch (normalizedState.value) {
-    case "error":
-      return "Retry";
-    case "warning":
-      return "Review";
-    case "success":
-      return "Done";
-    default:
-      return "Action";
-  }
-});
-
-const actionButtonClass = computed(() => {
-  switch (normalizedState.value) {
-    case "error":
-      return "border-error/40 hover:border-error/70";
-    case "warning":
-      return "border-warning/40 hover:border-warning/70";
-    case "success":
-      return "border-success/40 hover:border-success/70";
-    default:
-      return "border-border hover:border-secondary/60";
-  }
-});
-
 const toast = inject<(msg: string) => void>("toast");
 
-function onActionClick() {
-  switch (normalizedState.value) {
-    case "error":
-      toast?.("Retry triggered.");
-      break;
-    case "warning":
-      toast?.("Review opened.");
-      break;
-    case "success":
-      toast?.("Done.");
-      break;
-    default:
-      toast?.("Action triggered.");
-      break;
-  }
-}
-const isLoading = ref(false);
-
-async function simulateAsync() {
-  isLoading.value = true;
-
-  try {
-    await new Promise<void>((resolve) => window.setTimeout(resolve, 800));
-
-    // success toast (state에 맞게 메시지 유지)
-    onActionClick();
-  } finally {
-    isLoading.value = false;
-    onUp();
-  }
-}
+const {
+  actionButtonClass,
+  descriptionClass,
+  descriptionText,
+  variantClass,
+  actionLabel,
+  isPressed,
+  isLoading,
+  onDown,
+  onUp,
+  simulateAsync,
+} = useInteractiveCard({ state: normalizedState, toast });
 </script>
 
 <template>
