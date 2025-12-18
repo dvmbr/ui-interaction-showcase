@@ -1,67 +1,106 @@
 # UI Interaction Showcase
 
-A portfolio project built with **Vue 3** that demonstrates  
-interactive UI components and animation patterns for modern web interfaces.
+A portfolio project built with **Vue 3** that focuses on  
+**state-driven UI interactions and component architecture**, rather than visual styling alone.
 
-This project focuses on how **state changes, user interactions, and transitions**  
-can work together to create a smooth and intuitive user experience.
+This project demonstrates how **user actions, async flows, and UI feedback**  
+can be composed into predictable and reusable interaction patterns.
 
 ---
 
 ## Overview
 
-UI Interaction Showcase is not a component library,  
-but a **hands-on playground** for experimenting with common UI patterns such as:
+UI Interaction Showcase is a **practical playground**, not a UI library.
 
-- transitions and animations
-- interactive components
-- reusable UI architecture
-- responsive behavior
+Instead of collecting many unrelated components,  
+this project dives deep into **one interaction flow** and explores:
 
-The goal of this project is to showcase **frontend implementation skills** rather than visual design alone.
+- where state should live
+- how components communicate
+- how loading, success, error, and rollback states are expressed in UI
+- how interaction logic can be separated from presentation
+
+The goal is to showcase **frontend implementation and state management skills**.
 
 ---
 
-## Features
+## Current Features
 
-### Landing Page
-- Animation-driven hero section
-- Staggered entrance animations for feature cards
-- Section reveal on scroll
-- Clear call-to-action leading to the showcase page
+### Interactive Card (Core Example)
 
-### Showcase Page
-- Grid-based layout for interaction demos
-- Each demo focuses on a single interaction pattern
-- Components can be tested directly by the user
+A single interactive component that demonstrates a full UI lifecycle:
 
-### Included Interaction Components
-- Toast notifications (auto dismiss, stacked)
-- Modal / Dialog
-- Tabs with animated indicator
-- Accordion with smooth height transitions
+- **States**
+  - `default`
+  - `error`
+  - `loading`
+  - `success`
+- **User interactions**
+  - hover / focus feedback
+  - pressed state
+  - async action handling
+- **State flow**
+  - `error → loading → success`
+  - manual rollback back to `error`
+
+### Key Interaction Patterns
+
+- Parent-owned state (`props down`)
+- Child-triggered events (`events up`)
+- Explicit action intent via emitted events
+- Async UI feedback with loading indicators
+- Non-blocking toast notifications
+
+---
+
+## Toast System
+
+- Global toast stack (bottom-right)
+- Auto-dismiss behavior
+- Multiple toasts can stack
+- Implemented as a composable (`useToast`)
+- Injection handled via `Symbol` (no string-based keys)
+
+---
+
+## Architecture Highlights
+
+### State Ownership
+
+- **State is owned by the parent page**
+- Components never mutate their own state
+- Components emit events describing _what happened_, not _what should change_
+
+This keeps UI behavior predictable and easy to reason about.
+
+### Composables
+
+All reusable logic lives in `src/composables`.
+
+- `useInteractiveCard`
+- `useToast`
+
+Components focus only on rendering and wiring interactions,  
+while composables handle state, side effects, and business rules.
 
 ---
 
 ## Tech Stack
 
 ### Core
+
 - Vue 3
 - Vite
 - TypeScript
 
 ### Styling
-- Tailwind CSS
 
-### Animation & Interaction
-- Vue `<Transition>` and `<TransitionGroup>`
-- CSS transitions and keyframes
+- Tailwind CSS (semantic tokens + utility-based styling)
 
-### Routing
-- Vue Router
+### Interaction & Animation
 
-### Deployment
-- Netlify (SPA deployment)
+- CSS transitions
+- State-driven UI updates (no animation libraries)
 
 ---
 
@@ -70,13 +109,16 @@ The goal of this project is to showcase **frontend implementation skills** rathe
 ```txt
 src/
 ├─ components/
-│  ├─ common/
-│  ├─ demos/
-│  ├─ motion/
+│  ├─ interactions/
+│  │  └─ InteractiveCard.vue
 │  └─ ui/
+│     └─ ToastStack.vue
 ├─ composables/
+│  ├─ useInteractiveCard.ts
+│  └─ useToast.ts
 ├─ pages/
-├─ router/
+│  └─ ShowcaseHome.vue
 ├─ App.vue
-└─ main.ts
+├─ main.ts
+└─ style.css
 ```
