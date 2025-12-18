@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
+import { inject } from "vue";
 
 type CardState = "default" | "error" | "warning" | "success";
 
@@ -78,6 +79,25 @@ const actionButtonClass = computed(() => {
       return "border-border hover:border-secondary/60";
   }
 });
+
+const toast = inject<(msg: string) => void>("toast");
+
+function onActionClick() {
+  switch (normalizedState.value) {
+    case "error":
+      toast?.("Retry triggered.");
+      break;
+    case "warning":
+      toast?.("Review opened.");
+      break;
+    case "success":
+      toast?.("Done.");
+      break;
+    default:
+      toast?.("Action triggered.");
+      break;
+  }
+}
 </script>
 
 <template>
@@ -111,6 +131,7 @@ const actionButtonClass = computed(() => {
         @pointerup="onUp"
         @pointercancel="onUp"
         @blur="onUp"
+        @click="onActionClick"
       >
         {{ actionLabel }}
       </button>
