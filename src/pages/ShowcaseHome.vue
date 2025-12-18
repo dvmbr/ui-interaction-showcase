@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import InteractiveCard from "../components/interactions/InteractiveCard.vue";
-import type { CardState } from "../components/interactions/useInteractiveCard";
+import type { CardState } from "../composables/useInteractiveCard";
 
 const cardStateError = ref<CardState>("error");
 

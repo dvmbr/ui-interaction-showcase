@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { useInteractiveCard } from "./useInteractiveCard";
+import { useInteractiveCard } from "../../composables/useInteractiveCard";
 import { useToast } from "../../composables/useToast";
 
 type CardState = "default" | "error" | "warning" | "success";
