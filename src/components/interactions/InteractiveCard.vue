@@ -98,6 +98,21 @@ function onActionClick() {
       break;
   }
 }
+const isLoading = ref(false);
+
+async function simulateAsync() {
+  isLoading.value = true;
+
+  try {
+    await new Promise<void>((resolve) => window.setTimeout(resolve, 800));
+
+    // success toast (state에 맞게 메시지 유지)
+    onActionClick();
+  } finally {
+    isLoading.value = false;
+    onUp();
+  }
+}
 </script>
 
 <template>
@@ -124,16 +139,26 @@ function onActionClick() {
           'shrink-0 rounded-md border px-3 py-2 text-sm transition duration-200 ease-ease-out',
           'bg-bg-deep/40 hover:bg-bg-deep/60',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary',
+          'disabled:opacity-60 disabled:pointer-events-none',
           actionButtonClass,
           isPressed && 'scale-[0.98]',
         ]"
+        :disabled="isLoading"
         @pointerdown="onDown"
         @pointerup="onUp"
         @pointercancel="onUp"
         @blur="onUp"
-        @click="onActionClick"
+        @click="simulateAsync"
       >
-        {{ actionLabel }}
+        <span v-if="isLoading" class="inline-flex items-center gap-2">
+          <span
+            class="h-4 w-4 rounded-full border-2 border-current border-t-transparent animate-spin"
+          />
+          Loading
+        </span>
+        <span v-else>
+          {{ actionLabel }}
+        </span>
       </button>
     </div>
   </div>
