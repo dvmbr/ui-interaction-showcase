@@ -5,8 +5,12 @@ import type { CardState } from "../components/interactions/useInteractiveCard";
 
 const cardStateError = ref<CardState>("error");
 
-function onRetryDone() {
-  cardStateError.value = "success";
+function onCardAction(payload: { state: CardState; intent: "run" }) {
+  if (payload.intent !== "run") return;
+
+  if (cardStateError.value === "error") {
+    cardStateError.value = "success";
+  }
 }
 
 function rollbackToError() {
@@ -32,7 +36,7 @@ function rollbackToError() {
         </div>
 
         <div class="col-span-12 md:col-span-6 flex flex-col">
-          <InteractiveCard :state="cardStateError" @done="onRetryDone" />
+          <InteractiveCard :state="cardStateError" @action="onCardAction" />
           <button
             v-if="cardStateError === 'success'"
             class="text-sm text-text-muted underline hover:text-primary ml-auto mr-2"

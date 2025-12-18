@@ -26,8 +26,13 @@ const {
 } = useInteractiveCard({ state: normalizedState, showToast });
 
 const emit = defineEmits<{
-  (e: "done"): void;
+  (e: "action", payload: { state: CardState; intent: "run" }): void;
 }>();
+
+async function handleActionClick() {
+  await runAction();
+  emit("action", { state: normalizedState.value, intent: "run" });
+}
 </script>
 
 <template>
@@ -63,12 +68,7 @@ const emit = defineEmits<{
         @pointerup="onUp"
         @pointercancel="onUp"
         @blur="onUp"
-        @click="
-          async () => {
-            await runAction();
-            emit('done');
-          }
-        "
+        @click="handleActionClick"
       >
         <span v-if="isLoading" class="inline-flex items-center gap-2">
           <span
