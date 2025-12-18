@@ -1,5 +1,17 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import InteractiveCard from "../components/interactions/InteractiveCard.vue";
+import type { CardState } from "../components/interactions/useInteractiveCard";
+
+const cardStateError = ref<CardState>("error");
+
+function onRetryDone() {
+  cardStateError.value = "success";
+}
+
+function rollbackToError() {
+  cardStateError.value = "error";
+}
 </script>
 
 <template>
@@ -19,8 +31,15 @@ import InteractiveCard from "../components/interactions/InteractiveCard.vue";
           <InteractiveCard />
         </div>
 
-        <div class="col-span-12 md:col-span-6">
-          <InteractiveCard state="error" />
+        <div class="col-span-12 md:col-span-6 flex flex-col">
+          <InteractiveCard :state="cardStateError" @done="onRetryDone" />
+          <button
+            v-if="cardStateError === 'success'"
+            class="text-sm text-text-muted underline hover:text-primary ml-auto mr-2"
+            @click="rollbackToError"
+          >
+            Rollback to error
+          </button>
         </div>
 
         <div class="col-span-12 md:col-span-6">

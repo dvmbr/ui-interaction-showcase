@@ -29,6 +29,7 @@ export function useInteractiveCard({
   });
 
   const descriptionText = computed(() => {
+    if (isLoading.value) return "Processing...";
     switch (state.value) {
       case "error":
         return "Something went wrong.";
@@ -42,6 +43,7 @@ export function useInteractiveCard({
   });
 
   const actionLabel = computed(() => {
+    if (isLoading.value) return "Loading";
     switch (state.value) {
       case "error":
         return "Retry";
