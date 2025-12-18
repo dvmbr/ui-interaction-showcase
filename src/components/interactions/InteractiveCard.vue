@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 
 type CardState = "default" | "error" | "warning" | "success";
 
@@ -38,6 +38,46 @@ const descriptionText = computed(() => {
       return "Hover or focus to see interaction feedback.";
   }
 });
+
+/* 
+- Pressed feedback for "Action" button
+- Pointer events ensure consistent behavior across mouse/touch
+*/
+const isPressed = ref(false);
+
+function onDown() {
+  isPressed.value = true;
+}
+
+function onUp() {
+  isPressed.value = false;
+}
+
+const actionLabel = computed(() => {
+  switch (normalizedState.value) {
+    case "error":
+      return "Retry";
+    case "warning":
+      return "Review";
+    case "success":
+      return "Done";
+    default:
+      return "Action";
+  }
+});
+
+const actionButtonClass = computed(() => {
+  switch (normalizedState.value) {
+    case "error":
+      return "border-error/40 hover:border-error/70";
+    case "warning":
+      return "border-warning/40 hover:border-warning/70";
+    case "success":
+      return "border-success/40 hover:border-success/70";
+    default:
+      return "border-border hover:border-secondary/60";
+  }
+});
 </script>
 
 <template>
@@ -50,10 +90,30 @@ const descriptionText = computed(() => {
     ]"
     tabindex="0"
   >
-    <h3 class="text-lg font-medium mb-2">Interactive Card</h3>
+    <div class="flex items-start justify-between gap-3">
+      <div class="min-w-0">
+        <h3 class="text-lg font-medium mb-1">Interactive Card</h3>
+        <p :class="['text-sm', descriptionClass]">
+          {{ descriptionText }}
+        </p>
+      </div>
 
-    <p :class="['text-sm', descriptionClass]">
-      {{ descriptionText }}
-    </p>
+      <button
+        type="button"
+        :class="[
+          'shrink-0 rounded-md border px-3 py-2 text-sm transition duration-200 ease-ease-out',
+          'bg-bg-deep/40 hover:bg-bg-deep/60',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary',
+          actionButtonClass,
+          isPressed && 'scale-[0.98]',
+        ]"
+        @pointerdown="onDown"
+        @pointerup="onUp"
+        @pointercancel="onUp"
+        @blur="onUp"
+      >
+        {{ actionLabel }}
+      </button>
+    </div>
   </div>
 </template>
