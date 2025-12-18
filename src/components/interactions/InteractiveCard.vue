@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import { inject } from "vue";
+import { computed } from "vue";
 import { useInteractiveCard } from "./useInteractiveCard";
+import { useToast } from "../../composables/useToast";
 
 type CardState = "default" | "error" | "warning" | "success";
 
@@ -10,7 +10,7 @@ const props = defineProps<{
 }>();
 
 const normalizedState = computed<CardState>(() => props.state ?? "default");
-const toast = inject<(msg: string) => void>("toast");
+const { showToast } = useToast();
 
 const {
   actionButtonClass,
@@ -22,8 +22,8 @@ const {
   isLoading,
   onDown,
   onUp,
-  simulateAsync,
-} = useInteractiveCard({ state: normalizedState, toast });
+  runAction,
+} = useInteractiveCard({ state: normalizedState, showToast });
 </script>
 
 <template>
@@ -59,7 +59,7 @@ const {
         @pointerup="onUp"
         @pointercancel="onUp"
         @blur="onUp"
-        @click="simulateAsync"
+        @click="runAction"
       >
         <span v-if="isLoading" class="inline-flex items-center gap-2">
           <span

@@ -4,10 +4,13 @@ export type CardState = "default" | "error" | "warning" | "success";
 
 type UseInteractiveCardParams = {
   state: Ref<CardState>;
-  toast?: (msg: string) => void;
+  showToast?: (msg: string) => void;
 };
 
-export function useInteractiveCard({ state, toast }: UseInteractiveCardParams) {
+export function useInteractiveCard({
+  state,
+  showToast,
+}: UseInteractiveCardParams) {
   const variantClass = computed(() => {
     switch (state.value) {
       case "error":
@@ -78,37 +81,37 @@ export function useInteractiveCard({ state, toast }: UseInteractiveCardParams) {
     isPressed.value = false;
   }
 
-  function showToast(message: string) {
-    toast?.(message);
-  }
-
   function onActionClick() {
     switch (state.value) {
       case "error":
-        showToast("Retry triggered.");
+        showToast?.("Retry triggered.");
         break;
       case "warning":
-        showToast("Review opened.");
+        showToast?.("Review opened.");
         break;
       case "success":
-        showToast("Done.");
+        showToast?.("Done.");
         break;
       default:
-        showToast("Action triggered.");
+        showToast?.("Action triggered.");
         break;
     }
   }
 
   const isLoading = ref(false);
 
-  async function simulateAsync() {
+  // after
+  async function runAction() {
     isLoading.value = true;
 
     try {
+      // TODO: replace with real API call
+      // await api.runAction(state.value)
       await new Promise<void>((resolve) => window.setTimeout(resolve, 800));
 
-      // success toast (state에 맞게 메시지 유지)
-      onActionClick();
+      onActionClick(); // success feedback
+    } catch (e) {
+      showToast?.("Action failed.");
     } finally {
       isLoading.value = false;
       onUp();
@@ -125,6 +128,6 @@ export function useInteractiveCard({ state, toast }: UseInteractiveCardParams) {
     isLoading,
     onDown,
     onUp,
-    simulateAsync,
+    runAction,
   };
 }
