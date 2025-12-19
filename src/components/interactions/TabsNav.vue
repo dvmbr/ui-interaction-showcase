@@ -38,7 +38,7 @@ const indicatorOffsetClass = () => {
         type="button"
         class="relative z-10 rounded-md px-3 py-2 text-sm transition duration-200 ease-ease-out"
         :class="tabTextClass(tab)"
-        @click="() => select(tab)"
+        @click="select(tab)"
       >
         {{ tab }}
       </button>
