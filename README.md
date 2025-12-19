@@ -122,3 +122,37 @@ src/
 ├─ main.ts
 └─ style.css
 ```
+
+## State Patterns Used
+
+This project intentionally demonstrates common UI state patterns in Vue.
+
+### 1) Parent-owned state -> props down, events up
+
+The parent owns the state, and the child emits intent.
+
+**Example: Accordion (Single-open policy in parent)**
+
+- Child: `:isOpen` (prop) + `@update:isOpen` (event)
+- Parent: decides which item stays open
+
+### 2) v-model -> value editing components
+
+When a component’s job is to update a value (on/off, selected tab, open/close),
+`v-model` provides a clean two-way binding interface.
+
+**Used in**
+
+- ToggleSwitch -> `v-model`
+- TabsNav -> `v-model`
+- ModalDialog -> `v-model` (simple open/close case)
+
+### 3) Policy lives in the parent
+
+Components stay small and predictable.
+More complex rules are implemented in the parent.
+
+**Examples**
+
+- Accordion single-open -> parent controls `openIndex`
+- Tabs indicator -> UI reflects `activeTab` chosen by parent
