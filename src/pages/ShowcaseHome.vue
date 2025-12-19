@@ -2,8 +2,10 @@
 import { ref } from "vue";
 import InteractiveCard from "../components/interactions/InteractiveCard.vue";
 import type { CardState } from "../composables/useInteractiveCard";
+import ToggleSwitch from "../components/interactions/ToggleSwitch.vue";
 
 const cardStateError = ref<CardState>("error");
+const isEnabled = ref(false);
 
 function onCardAction(payload: { state: CardState; intent: "run" }) {
   if (payload.intent !== "run") return;
@@ -52,6 +54,10 @@ function rollbackToError() {
 
         <div class="col-span-12 md:col-span-6">
           <InteractiveCard state="success" />
+        </div>
+
+        <div class="col-span-12 md:col-span-6">
+          <ToggleSwitch v-model="isEnabled" label="Demo Toggle" />
         </div>
       </section>
     </div>
