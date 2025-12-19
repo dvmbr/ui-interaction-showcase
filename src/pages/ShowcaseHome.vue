@@ -4,10 +4,14 @@ import InteractiveCard from "../components/interactions/InteractiveCard.vue";
 import type { CardState } from "../composables/useInteractiveCard";
 import ToggleSwitch from "../components/interactions/ToggleSwitch.vue";
 import ModalDialog from "../components/interactions/ModalDialog.vue";
+import TabsNav from "../components/interactions/TabsNav.vue";
 
 const cardStateError = ref<CardState>("error");
 const isEnabled = ref(false);
 const isModalOpen = ref(false);
+
+const tabs = ["Overview", "Details", "Settings"] as const;
+const activeTab = ref<(typeof tabs)[number]>(tabs[0]);
 
 function onCardAction(payload: { state: CardState; intent: "run" }) {
   if (payload.intent !== "run") return;
@@ -74,6 +78,16 @@ function rollbackToError() {
           </div>
 
           <ModalDialog v-model="isModalOpen" title="Example Modal" />
+        </div>
+
+        <div class="col-span-12 md:col-span-6">
+          <TabsNav v-model="activeTab" :tabs="tabs" />
+
+          <div
+            class="mt-3 rounded-lg border border-border bg-bg-surface p-4 text-sm text-text-muted"
+          >
+            Active tab: <span class="text-text-main">{{ activeTab }}</span>
+          </div>
         </div>
       </section>
     </div>
