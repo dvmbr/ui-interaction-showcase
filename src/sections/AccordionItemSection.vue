@@ -54,8 +54,8 @@ function setOpen(i: number, nextOpen: boolean) {
         v-for="(item, i) in items"
         :key="item.id"
         :title="item.title"
-        :model-value="openIndex === i"
-        @update:modelValue="(open) => setOpen(i, open)"
+        :is-open="openIndex === i"
+        @update:is-open="(open) => setOpen(i, open)"
       >
         <!-- If your AccordionItem doesn't support slots yet, ignore this block -->
         <template #default>
@@ -64,9 +64,6 @@ function setOpen(i: number, nextOpen: boolean) {
           </div>
         </template>
       </AccordionItem>
-
-      <!-- If your AccordionItem currently has fixed body text, 
-              just remove the slot section above and keep the v-model logic. -->
     </div>
   </div>
 </template>
