@@ -2,17 +2,21 @@
 import { onMounted, onUnmounted } from "vue";
 
 const props = defineProps<{
-  open: boolean;
+  modelValue: boolean;
   title?: string;
 }>();
 
 const emit = defineEmits<{
-  (e: "close"): void;
+  (e: "update:modelValue", value: boolean): void;
 }>();
+
+function close() {
+  emit("update:modelValue", false);
+}
 
 function onKeydown(e: KeyboardEvent) {
   if (e.key === "Escape") {
-    emit("close");
+    emit("update:modelValue", false);
   }
 }
 
@@ -35,9 +39,9 @@ onUnmounted(() => {
     leave-to-class="opacity-0"
   >
     <div
-      v-if="open"
+      v-if="modelValue"
       class="fixed inset-0 z-40 flex items-center justify-center bg-black/60"
-      @click.self="emit('close')"
+      @click.self="close()"
     >
       <div
         class="w-full max-w-md rounded-lg border border-border bg-bg-surface p-6"
@@ -58,7 +62,7 @@ onUnmounted(() => {
         <div class="mt-6 flex justify-end">
           <button
             class="rounded-md border border-border px-3 py-2 text-sm hover:bg-bg-elevate"
-            @click="emit('close')"
+            @click="close()"
           >
             Close
           </button>

@@ -73,11 +73,7 @@ function rollbackToError() {
             </button>
           </div>
 
-          <ModalDialog
-            :open="isModalOpen"
-            title="Example Modal"
-            @close="isModalOpen = false"
-          />
+          <ModalDialog v-model="isModalOpen" title="Example Modal" />
         </div>
       </section>
     </div>
