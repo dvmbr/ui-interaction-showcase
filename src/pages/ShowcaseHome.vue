@@ -3,9 +3,11 @@ import { ref } from "vue";
 import InteractiveCard from "../components/interactions/InteractiveCard.vue";
 import type { CardState } from "../composables/useInteractiveCard";
 import ToggleSwitch from "../components/interactions/ToggleSwitch.vue";
+import ModalDialog from "../components/interactions/ModalDialog.vue";
 
 const cardStateError = ref<CardState>("error");
 const isEnabled = ref(false);
+const isModalOpen = ref(false);
 
 function onCardAction(payload: { state: CardState; intent: "run" }) {
   if (payload.intent !== "run") return;
@@ -58,6 +60,24 @@ function rollbackToError() {
 
         <div class="col-span-12 md:col-span-6">
           <ToggleSwitch v-model="isEnabled" label="Demo Toggle" />
+        </div>
+
+        <div class="col-span-12 md:col-span-6">
+          <div class="rounded-lg border border-border bg-bg-surface p-4">
+            <p class="mb-3 text-sm text-text-muted">Modal interaction demo</p>
+            <button
+              class="rounded-md border border-border px-3 py-2 text-sm hover:bg-bg-elevate"
+              @click="isModalOpen = true"
+            >
+              Open Modal
+            </button>
+          </div>
+
+          <ModalDialog
+            :open="isModalOpen"
+            title="Example Modal"
+            @close="isModalOpen = false"
+          />
         </div>
       </section>
     </div>
