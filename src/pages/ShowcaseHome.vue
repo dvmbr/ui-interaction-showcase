@@ -5,6 +5,7 @@ import type { CardState } from "../composables/useInteractiveCard";
 import ToggleSwitch from "../components/interactions/ToggleSwitch.vue";
 import ModalDialog from "../components/interactions/ModalDialog.vue";
 import TabsNav from "../components/interactions/TabsNav.vue";
+import AccordionItem from "../components/interactions/AccordionItem.vue";
 
 const cardStateError = ref<CardState>("error");
 const isEnabled = ref(false);
@@ -23,6 +24,43 @@ function onCardAction(payload: { state: CardState; intent: "run" }) {
 
 function rollbackToError() {
   cardStateError.value = "error";
+}
+
+type AccordionData = {
+  id: string;
+  title: string;
+  body: string;
+};
+
+const items: AccordionData[] = [
+  {
+    id: "a1",
+    title: "Why parent-owned state?",
+    body: "The parent decides which item is open. Each item is dumb and predictable.",
+  },
+  {
+    id: "a2",
+    title: "Why no JS height measurement?",
+    body: "For a small showcase, max-height transitions are simpler and good enough.",
+  },
+  {
+    id: "a3",
+    title: "What does single-open mean?",
+    body: "Opening one item closes the others automatically.",
+  },
+];
+
+// Single-open policy -> only one index can be open at a time
+const openIndex = ref<number | null>(0);
+
+function setOpen(i: number, nextOpen: boolean) {
+  // nextOpen: true -> open this item (close others)
+  // nextOpen: false -> close this item (no items open)
+  openIndex.value = nextOpen
+    ? i
+    : openIndex.value === i
+    ? null
+    : openIndex.value;
 }
 </script>
 
@@ -80,13 +118,45 @@ function rollbackToError() {
           <ModalDialog v-model="isModalOpen" title="Example Modal" />
         </div>
 
-        <div class="col-span-12 md:col-span-6">
+        <div
+          class="col-span-12 md:col-span-6 border border-border p-4 rounded-lg mb-4"
+        >
           <TabsNav v-model="activeTab" :tabs="tabs" />
 
           <div
             class="mt-3 rounded-lg border border-border bg-bg-surface p-4 text-sm text-text-muted"
           >
             Active tab: <span class="text-text-main">{{ activeTab }}</span>
+          </div>
+        </div>
+
+        <div class="col-span-12 border border-border p-4 rounded-lg mb-4">
+          <h2 class="text-lg font-medium text-text-main mb-2">
+            Accordion (Single-open)
+          </h2>
+          <p class="text-sm text-text-muted mb-4">
+            Only one item can be open at a time. Opening a new item closes the
+            previous one.
+          </p>
+
+          <div class="space-y-2">
+            <AccordionItem
+              v-for="(item, i) in items"
+              :key="item.id"
+              :title="item.title"
+              :model-value="openIndex === i"
+              @update:modelValue="(open) => setOpen(i, open)"
+            >
+              <!-- If your AccordionItem doesn't support slots yet, ignore this block -->
+              <template #default>
+                <div class="px-4 py-3 text-sm text-text-muted">
+                  {{ item.body }}
+                </div>
+              </template>
+            </AccordionItem>
+
+            <!-- If your AccordionItem currently has fixed body text, 
+              just remove the slot section above and keep the v-model logic. -->
           </div>
         </div>
       </section>
