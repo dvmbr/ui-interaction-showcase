@@ -4,6 +4,7 @@ import ToggleSwitchSection from "../sections/ToggleSwitchSection.vue";
 import ModalDialogSection from "../sections/ModalDialogSection.vue";
 import TabsNavSection from "../sections/TabsNavSection.vue";
 import AccordionItemSection from "../sections/AccordionItemSection.vue";
+import TooltipSection from "../sections/TooltipSection.vue";
 </script>
 
 <template>
@@ -23,6 +24,7 @@ import AccordionItemSection from "../sections/AccordionItemSection.vue";
         <ToggleSwitchSection />
         <ModalDialogSection />
         <TabsNavSection />
+        <TooltipSection />
         <AccordionItemSection />
       </section>
     </div>
